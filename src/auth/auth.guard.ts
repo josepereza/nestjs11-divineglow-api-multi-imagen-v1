@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest<Request>();
+    const req = context.switchToHttp().getRequest();
     const auth = req.headers['authorization'];
     if (!auth) throw new UnauthorizedException('No token');
     const parts = auth.split(' ');
@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
     const token = parts[1];
     try {
       const payload = this.authService.verifyToken(token);
-      (req as any).user = payload;
+      req.user = payload;
       return true;
     } catch (err) {
       throw new UnauthorizedException('Token inválido');
