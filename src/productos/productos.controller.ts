@@ -43,7 +43,7 @@ export class ProductosController {
     // simple route placeholder; puedes extender
     return this.productosService.findOne(+id);
   }
-
+  @UseGuards(AuthGuard)
   @Put(':id')
   update(
     @Param('id') id: string,
@@ -51,7 +51,7 @@ export class ProductosController {
   ) {
     return this.productosService.update(+id, updateProductoDto);
   }
-
+  @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productosService.remove(+id);
@@ -61,7 +61,7 @@ export class ProductosController {
   // Subir imagen a un producto
   // -------------------------
   // Define el motor de almacenamiento fuera del interceptor
-
+  @UseGuards(AuthGuard)
   @Post('upload')
   @UseInterceptors(
     FilesInterceptor('files', 20, {
