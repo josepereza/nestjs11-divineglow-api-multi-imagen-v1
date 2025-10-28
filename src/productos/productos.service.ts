@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -39,8 +39,21 @@ export class ProductosService {
     return await this.productoRepository.save(producto);
   }
 
-  update(id: number, updateProductoDto: UpdateProductoDto) {
+  /*  update(id: number, updateProductoDto: UpdateProductoDto) {
     return this.productoRepository.update({ id }, { ...updateProductoDto });
+  }
+ */
+  async update(id: number, updateProductoDto: UpdateProductoDto) {
+    const producto = await this.productoRepository.preload({
+      id,
+      ...updateProductoDto,
+    });
+
+    if (!producto) {
+      throw new NotFoundException(`Producto ${id} no encontrado`);
+    }
+
+    return this.productoRepository.save(producto);
   }
 
   remove(id: number) {
