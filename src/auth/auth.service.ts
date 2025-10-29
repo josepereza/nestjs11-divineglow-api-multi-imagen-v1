@@ -12,8 +12,8 @@ export class AuthService {
     return null;
   }
 
-  login(user: any) {
-    const payload = { username: user.username, sub: user.id, role: user.role };
+  login(user: { id: number; username: string; password: string }) {
+    const payload = { username: user.username, sub: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', {
       expiresIn: process.env.JWT_EXPIRES_IN || '3600s',
     });
@@ -23,7 +23,7 @@ export class AuthService {
   verifyToken(token: string) {
     try {
       return jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    } catch (err) {
+    } catch {
       throw new UnauthorizedException('Token inválido');
     }
   }

@@ -5,23 +5,27 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
-    const auth = req.headers['authorization'];
-    if (!auth) throw new UnauthorizedException('No token');
-    const parts = auth.split(' ');
-    if (parts.length !== 2) throw new UnauthorizedException('Formato inválido');
-    const token = parts[1];
+    const request: Request = context.switchToHttp().getRequest();
+
+    const authHeader = request.headers.authorization;
+    if (typeof authHeader !== 'string') {
+      throw new UnauthorizedException('Invalid authorization header');
+    }
+
+    const [type, token] = authHeader.split(' ');
+    if (!token) throw new UnauthorizedException('No token');
     try {
       const payload = this.authService.verifyToken(token);
-      req.user = payload;
+      request['user'] = payload;
       return true;
-    } catch (err) {
+    } catch {
       throw new UnauthorizedException('Token inválido');
     }
   }
