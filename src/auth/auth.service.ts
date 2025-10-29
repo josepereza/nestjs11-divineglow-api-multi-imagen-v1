@@ -12,8 +12,13 @@ export class AuthService {
     return null;
   }
 
-  login(user: { id: number; username: string; password: string }) {
-    const payload = { username: user.username, sub: user.id };
+  login(user: {
+    id: number;
+    username: string;
+    password: string;
+    role: string;
+  }) {
+    const payload = { username: user.username, sub: user.id, role: user.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', {
       expiresIn: process.env.JWT_EXPIRES_IN || '3600s',
     });
