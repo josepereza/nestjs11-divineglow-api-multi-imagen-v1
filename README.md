@@ -33,7 +33,7 @@ curl -X POST http://localhost:3000/auth/login \
 ```
 
 ## ejemplos: Crear un nuevo producto (protegido 🔐) cambiar acces_token por el valor real.
-* quizas haya que quitar la cabezera: -H "Content-Type: application/json" y dejar solamente la cabezera: -H "Authorization: Bearer efjfls.e2242...." \
+* quizas haya que quitar la cabezera: -H "Content-Type: application/json" y dejar solamente la cabezera: -H "Authorization: Bearer efjfls.e2242...." \  ya que desde el frontend estamos enviando un form-data .
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -50,7 +50,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 ```
 
 ## ejemplos: Crear un nuevo producto (protegido 🔐)
-* quizas haya que quitar la cabezera: -H "Content-Type: application/json" y dejar solamente la cabezera: -H "Authorization: Bearer efjfls.e2242...." \
+* quizas haya que quitar la cabezera: -H "Content-Type: application/json" y dejar solamente la cabezera: -H "Authorization: Bearer efjfls.e2242...." \  ya que desde el frontend estamos enviando un form-data .
 ```bash
 curl -X POST http://localhost:3000/productos \
   -H "Content-Type: application/json" \
