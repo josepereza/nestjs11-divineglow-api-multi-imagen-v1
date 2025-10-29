@@ -22,6 +22,7 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## ejemplos: Login (obtener token JWT)
+
 ```bash
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
@@ -30,7 +31,10 @@ curl -X POST http://localhost:3000/auth/login \
     "password": "admin"
   }'
 ```
+
 ## ejemplos: Crear un nuevo producto (protegido 🔐) cambiar acces_token por el valor real.
+* quizas haya que quitar la cabezera: -H "Content-Type: application/json" y dejar solamente la cabezera: -H "Authorization: Bearer efjfls.e2242...." \
+
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
   "name": "Bolso Multi-Imagen",
@@ -46,6 +50,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 ```
 
 ## ejemplos: Crear un nuevo producto (protegido 🔐)
+* quizas haya que quitar la cabezera: -H "Content-Type: application/json" y dejar solamente la cabezera: -H "Authorization: Bearer efjfls.e2242...." \
 ```bash
 curl -X POST http://localhost:3000/productos \
   -H "Content-Type: application/json" \
@@ -54,11 +59,14 @@ curl -X POST http://localhost:3000/productos \
     "name": "Bolso de Cuero Elegante",
     "description": "Un sofisticado bolso de cuero, perfecto para cualquier ocasión.",
     "price": 12.95,
-    "imageUrl": "/cuero.jpeg",
-    "stock": 5
+    "stock": 5,
+    "imagenes": [ {"imageUrl": "/img1.jpeg"},{"imageUrl": "/img2.jpeg"},{"imageUrl": "/img3.jpeg"}
+  ]
   }'
 ```
+
 ## ejemplos: Crear un pedido (controla stock automáticamente)
+
 ```bash
 curl -X POST http://localhost:3000/pedidos \
   -H "Content-Type: application/json" \
@@ -78,7 +86,9 @@ curl -X POST http://localhost:3000/pedidos \
     ]
   }'
 ```
+
 ## ejemplos: Crear un usuario adicional(opcional)
+
 ```
 curl -X POST http://localhost:3000/usuarios \
   -H "Content-Type: application/json" \
@@ -87,7 +97,9 @@ curl -X POST http://localhost:3000/usuarios \
     "password": "1234"
   }'
 ```
+
 ## Extra flujo completo resumido:
+
 🔑 POST /auth/login → obtienes token
 
 📦 GET /productos → ves los productos iniciales
@@ -173,5 +185,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
 # nestjs11-divineglow-api-v2
+
 # nestjs11-divineglow-api-multi-imagen-v1
