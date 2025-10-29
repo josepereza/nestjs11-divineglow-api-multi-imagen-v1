@@ -110,6 +110,96 @@ curl -X POST http://localhost:3000/usuarios \
 
 📜 GET /pedidos → ves todos los pedidos con su total
 
+## Migracion a lazy loading.
+🔄 ¿Qué cambia con Lazy Loading?
+Eager Loading (lo que tienes ahora)
+
+📌 Siempre trae las imágenes junto con el producto
+⛔ Puede ser costoso en rendimiento si hay muchas imágenes
+
+Lazy Loading (lo que quieres tener)
+
+✅ Solo carga las imágenes cuando realmente las accedes
+➡️ Se consigue usando Promises en las relaciones y eager: false
+
+✅ Modelo ajustado a Lazy Loading
+📌 Producto.entity.ts
+@Entity('productos')
+export class Producto {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column('text')
+  description: string;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  price: number;
+
+  @OneToMany(() => ProductoImagen, (imagen) => imagen.producto, {
+    cascade: true,
+    eager: false, // 🔄 Lazy loading => cambiar a false
+  })
+  imagenes: Promise<ProductoImagen[]>; // 👈 PROMISE!
+
+  @Column('int')
+  stock: number;
+}
+
+📌 ProductoImagen.entity.ts
+@Entity()
+export class ProductoImagen {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  imageUrl: string;
+
+  @ManyToOne(() => Producto, (producto) => producto.imagenes, {
+    onDelete: 'CASCADE',
+    eager: false, // 👈 también opcionalmente lo pones en lazy
+  })
+  producto: Promise<Producto>; // 👈 PROMISE!
+}
+
+✅ ¿Cómo se usan ahora?
+
+Ejemplo en tu servicio:
+
+const producto = await this.productoRepo.findOne({ where: { id } });
+
+// Lazy: solo se carga si lo accedes explícitamente
+const imagenes = await producto.imagenes;
+console.log(imagenes);
+
+
+🤝 Esto evita consultas innecesarias
+🔥 Mucho mejor para rendimiento
+
+✅ Reglas de Lazy Loading en TypeORM
+Feature	Lazy Loading
+Propiedades de relaciones	Siempre Promise<T>
+eager	Siempre false
+Queries	Debes usar await producto.relacion
+Ventaja	Mejor rendimiento
+Desventaja	Más consultas si no se planifica bien
+🧠 Nota importante
+
+Lazy loading requiere habilitar proxies de TypeORM
+Esto normalmente ya está habilitado por defecto en NestJS con TypeORM.
+
+Si no, asegúrate de NO usar:
+
+{ proxy: false }
+
+🎯 Conclusión
+
+✅ Ya tienes tu modelo adaptado a Lazy Loading
+✅ Mejor rendimiento
+✅ Cargas diferidas solo cuando las necesitas
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
