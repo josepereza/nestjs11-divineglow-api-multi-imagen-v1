@@ -122,4 +122,33 @@ export class ProductosService {
     const imagen = this.imagenRepository.create({ imageUrl, producto });
     return await this.imagenRepository.save(imagen);
   }
+  // lineas para agregar mas imagenes.
+  async addImagesToProduct(id: number, files: Express.Multer.File[]) {
+    console.log('⏳ Recibiendo imágenes:', files);
+
+    const producto = await this.productoRepository.findOne({
+      where: { id },
+      relations: ['imagenes'],
+    });
+
+    if (!producto) throw new NotFoundException('Producto no encontrado');
+
+    const nuevasImagenes = files.map((file) =>
+      this.imagenRepository.create({
+        imageUrl: '/uploads/' + file.filename, // Asegúrate que NO sea undefined
+        producto,
+      }),
+    );
+
+    console.log('📥 Intentando guardar:', nuevasImagenes);
+
+    const resultado = await this.imagenRepository.save(nuevasImagenes);
+
+    console.log('📤 Guardado en BD:', resultado);
+
+    return {
+      message: 'Imágenes subidas correctamente',
+      imagenes: resultado,
+    };
+  }
 }

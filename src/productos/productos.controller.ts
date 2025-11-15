@@ -86,4 +86,23 @@ export class ProductosController {
     const imagenes = mapFilesToImages(files);
     return this.productosService.create(createProductoDto, imagenes);
   }
+  //lineas para agreagar mas imagenes
+  @Post(':id/imagenes')
+  @UseInterceptors(
+    FilesInterceptor('imagenes', 10, {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const fileName = Date.now() + path.extname(file.originalname);
+          cb(null, fileName);
+        },
+      }),
+    }),
+  )
+  uploadImages(
+    @Param('id') id: number,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.productosService.addImagesToProduct(id, files);
+  }
 }
