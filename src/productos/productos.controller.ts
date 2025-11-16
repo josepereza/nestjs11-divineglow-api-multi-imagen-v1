@@ -105,4 +105,9 @@ export class ProductosController {
   ) {
     return this.productosService.addImagesToProduct(id, files);
   }
+
+  @Delete(':id/imagenes/:imageId')
+  deleteImage(@Param('id') id: number, @Param('imageId') imageId: number) {
+    return this.productosService.deleteImage(id, imageId);
+  }
 }

@@ -12,6 +12,8 @@ import {
 import { Producto } from './entities/producto.entity';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { ProductoImagen } from './entities/producto-imagen.entity';
+import path from 'path';
+import { promises as fs } from 'fs';
 
 @Injectable()
 export class ProductosService {
@@ -150,5 +152,33 @@ export class ProductosService {
       message: 'Imágenes subidas correctamente',
       imagenes: resultado,
     };
+  }
+
+  async deleteImage(productId: number, imageId: number) {
+    const img = await this.imagenRepository.findOne({
+      where: { id: imageId, producto: { id: productId } },
+    });
+
+    if (!img) throw new NotFoundException('Imagen no encontrada');
+
+    // borrar archivo físico
+    try {
+      // borrar archivo físico de forma asíncrona
+
+      // const filePath = path.join('./uploads', img.imageUrl);
+      const filePath = path.join('.' + img.imageUrl); //el /uploads ya va integrado en el campo imageUr
+      await fs.access(filePath); // Verificar si el archivo existe
+      await fs.unlink(filePath); // Eliminar el archivo
+    } catch (error) {
+      // Si el archivo no existe, continuamos igual
+      const fsError = error as NodeJS.ErrnoException;
+      if (fsError.code !== 'ENOENT') {
+        throw error;
+      }
+    }
+
+    await this.imagenRepository.remove(img);
+
+    return { message: 'Imagen eliminada' };
   }
 }
